@@ -5,13 +5,17 @@ import (
 	"log"
 	"sort"
 	"os"
+	"os/user"
 	"io"
 	"strings"
+	"path/filepath"
 
 	"github.com/fatih/color"
 )
 
-var DotFolder = os.Getenv("HOME") + "/.gdtool"
+var usr, _ = user.Current()
+var DotFolder = filepath.Join(usr.HomeDir, ".gdtool")
+var TokenCacheDir = filepath.Join(DotFolder, "credentials")
 
 var IsTesting bool = false
 

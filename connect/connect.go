@@ -8,13 +8,14 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/user"
 	"path/filepath"
 
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/drive/v2"
+
+	. "github.com/taryk/gdtool/core"
 )
 
 // getClient uses a Context and Config to retrieve a Token
@@ -54,13 +55,8 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 // tokenCacheFile generates credential file path/filename.
 // It returns the generated credential path/filename.
 func tokenCacheFile() (string, error) {
-	usr, err := user.Current()
-	if err != nil {
-		return "", err
-	}
-	tokenCacheDir := filepath.Join(usr.HomeDir, ".credentials")
-	os.MkdirAll(tokenCacheDir, 0700)
-	return filepath.Join(tokenCacheDir,
+	err := os.MkdirAll(TokenCacheDir, 0700)
+	return filepath.Join(TokenCacheDir,
 		url.QueryEscape("drive-go-quickstart.json")), err
 }
 
@@ -90,9 +86,15 @@ func saveToken(file string, token *oauth2.Token) {
 }
 
 func Connect() *drive.Service {
+	if exists, _ := DirExists(TokenCacheDir); !exists {
+		if err := CreatePath(TokenCacheDir); err != nil {
+			return nil
+		}
+	}
 	ctx := context.Background()
 
-	b, err := ioutil.ReadFile("client_secrets.json")
+	client_secrets_file := filepath.Join(TokenCacheDir, "client_secrets.json")
+	b, err := ioutil.ReadFile(client_secrets_file)
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
