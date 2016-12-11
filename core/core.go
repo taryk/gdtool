@@ -14,8 +14,8 @@ import (
 )
 
 var usr, _ = user.Current()
-var DotFolder = filepath.Join(usr.HomeDir, ".gdtool")
-var TokenCacheDir = filepath.Join(DotFolder, "credentials")
+var HomeDotDir = filepath.Join(usr.HomeDir, ".gdtool")
+var TokenCacheDir = filepath.Join(HomeDotDir, "credentials")
 
 var IsTesting bool = false
 
@@ -77,7 +77,7 @@ func InitLoggers(log_files ...string) {
 		if IsTesting {
 			log_handler = os.Stdout
 		} else {
-			log_dir := DotFolder + "/logs"
+			log_dir := HomeDotDir + "/logs"
 			if exists, _ := DirExists(log_dir); !exists {
 				if err := CreatePath(log_dir); err != nil {
 					fmt.Errorf("Can't create a log dir \"%s\"\n", log_dir)

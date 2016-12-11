@@ -19,7 +19,7 @@ func CheckCacheExists(filename string) bool {
 }
 
 func GetCacheFileName(where, what string) (string, error) {
-	cache_dir := DotFolder + "/dumps/" + where + "/"
+	cache_dir := HomeDotDir + "/dumps/" + where + "/"
 	if exists, _ := DirExists(cache_dir); !exists {
 		if err := CreatePath(cache_dir); err != nil {
 			return "", err
