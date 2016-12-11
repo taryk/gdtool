@@ -73,7 +73,14 @@ func InitLoggers(log_files ...string) {
 		if IsTesting {
 			log_handler = os.Stdout
 		} else {
-			log_handler, _ = os.OpenFile(DotFolder + "/logs/" + name + ".log",
+			log_dir := DotFolder + "/logs"
+			if exists, _ := DirExists(log_dir); !exists {
+				if err := CreatePath(log_dir); err != nil {
+					fmt.Errorf("Can't create a log dir \"%s\"\n", log_dir)
+					continue handler
+				}
+			}
+			log_handler, _ = os.OpenFile(log_dir + "/" + name + ".log",
 				os.O_CREATE | os.O_RDWR | os.O_APPEND, 0660)
 		}
 		*loggers[name] = log.New(log_handler,
@@ -97,4 +104,15 @@ func FileTreeStr(relativePath string, fileList FileList) string {
 		}
 	}
 	return output
+}
+
+func DirExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil { return true, nil }
+	if os.IsNotExist(err) { return false, nil }
+	return true, err
+}
+
+func CreatePath(path string) error {
+	return os.MkdirAll(path, 0750)
 }
