@@ -11,6 +11,8 @@ import (
 	"github.com/fatih/color"
 )
 
+var DotFolder = os.Getenv("HOME") + "/.gdtool"
+
 var IsTesting bool = false
 
 var (
@@ -71,7 +73,7 @@ func InitLoggers(log_files ...string) {
 		if IsTesting {
 			log_handler = os.Stdout
 		} else {
-			log_handler, _ = os.OpenFile("logs/" + name + ".log",
+			log_handler, _ = os.OpenFile(DotFolder + "/logs/" + name + ".log",
 				os.O_CREATE | os.O_RDWR | os.O_APPEND, 0660)
 		}
 		*loggers[name] = log.New(log_handler,

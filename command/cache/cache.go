@@ -19,7 +19,7 @@ func CheckCacheExists(filename string) bool {
 }
 
 func GetCacheFileName(where, what string) string {
-	filename := "dumps/" + where + "/"
+	filename := DotFolder + "/dumps/" + where + "/"
 	switch where {
 	case "local":
 		_, dir_name := path.Split(what)
